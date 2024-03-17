@@ -2,7 +2,11 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/router'
 import { destroyCookie, setCookie } from 'nookies'
 import { ReactNode, createContext, useState } from 'react'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+} from 'firebase/auth'
 
 import { api } from '@/services/apiClient'
 import { auth } from '@/services/firebase'
@@ -15,7 +19,7 @@ export interface AuthContextDataProps {
   login: (email: string, password: string) => Promise<void>
   register: (name: string, email: string, password: string) => Promise<void>
   loginWithGoogle: () => Promise<void>
-  // loginWithGithub: () => Promise<void>
+  loginWithGithub: () => Promise<void>
   logout: () => void
   loading: boolean
 }
@@ -235,6 +239,71 @@ export const AuthProvider = ({ children }: AuthContextProviderProps) => {
     })
   }
 
+  const loginWithGithub = async () => {
+    setLoading(true)
+
+    const provider = new GithubAuthProvider()
+
+    signInWithPopup(auth, provider).then(async (result) => {
+      const credential = GithubAuthProvider.credentialFromResult(result)
+      const accessToken = credential?.accessToken
+
+      await api
+        .post('github', { accessToken })
+        .then((response) => {
+          const { token } = response.data
+
+          setCookie(undefined, '@user.token', token, {
+            maxAge: sevenDayInSecs,
+            path: '/',
+            sameSite: 'strict',
+          })
+
+          api.defaults.headers.authorization = `Bearer ${token}`
+
+          toast.error('Sucesso!', {
+            description: 'Login realizado com sucesso! Bem-vindo de volta',
+            action: {
+              label: 'Fechar',
+              onClick: () => {},
+            },
+          })
+
+          router.push('/')
+        })
+        .catch((error) => {
+          console.log(error)
+
+          if (error.code === 'ERR_NETWORK') {
+            // alert('Erro ao se conectar com o servidor')
+            toast.error('Erro!', {
+              description:
+                'Não foi possível se conectar com o servidor. Tente novamente mais tarde.',
+              action: {
+                label: 'Fechar',
+                onClick: () => {},
+              },
+            })
+          }
+
+          if (error.response.data.message === 'Invalid user data from Google') {
+            // alert('Erro ao se conectar com o servidor')
+            toast.error('Dados inválidos', {
+              description:
+                'Sua conta Google não possui os dados necessários para ser cadastrada. Tente novamente mais tarde',
+              action: {
+                label: 'Fechar',
+                onClick: () => {},
+              },
+            })
+          }
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    })
+  }
+
   const logout = () => {
     destroyCookie(null, '@user.token', {
       path: '/',
@@ -253,7 +322,14 @@ export const AuthProvider = ({ children }: AuthContextProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ login, register, logout, loading, loginWithGoogle }}
+      value={{
+        login,
+        logout,
+        loading,
+        register,
+        loginWithGoogle,
+        loginWithGithub,
+      }}
     >
       {children}
     </AuthContext.Provider>

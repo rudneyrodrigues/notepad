@@ -21,7 +21,7 @@ const loginFormSchema = yup.object().shape({
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
 
-  const { login, loading, loginWithGoogle } = useAuth()
+  const { login, loading, loginWithGoogle, loginWithGithub } = useAuth()
   const router = useRouter()
 
   const {
@@ -40,6 +40,12 @@ export default function Login() {
 
   const handleLoginWithGoogle = async () => {
     await loginWithGoogle()
+
+    router.push('/')
+  }
+
+  const handleLoginWithGithub = async () => {
+    await loginWithGithub()
 
     router.push('/')
   }
@@ -83,7 +89,12 @@ export default function Login() {
               <GoogleLogo size={20} />
               Google
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              isLoading={loading}
+              onClick={handleLoginWithGithub}
+              className="w-full"
+            >
               <GithubLogo size={20} />
               Github
             </Button>
