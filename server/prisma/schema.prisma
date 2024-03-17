@@ -20,6 +20,7 @@ model User {
   password   String?
   picture    String?
   googleId   String?
+  githubId   Decimal?
   notes      Note[]
   highlights Highlight[]
 }

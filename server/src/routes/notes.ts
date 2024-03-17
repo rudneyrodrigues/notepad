@@ -85,6 +85,7 @@ export const notesRouter = async (fastify: FastifyInstance) => {
       const notes = await prisma.note.findMany({
         where: {
           authorId: sub,
+          trashed: false,
         },
       })
 
@@ -140,6 +141,7 @@ export const notesRouter = async (fastify: FastifyInstance) => {
         where: {
           authorId: sub,
           archived: true,
+          trashed: false,
         },
       })
 

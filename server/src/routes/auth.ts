@@ -3,6 +3,7 @@ import { FastifyInstance } from 'fastify'
 
 import { prisma } from '../lib/prisma'
 import { googleApi } from '../lib/google'
+import { githubApi } from '../lib/github'
 import { authenticate } from '../plugins/authenticate'
 
 export const authRouter = async (fastify: FastifyInstance) => {
@@ -149,6 +150,82 @@ export const authRouter = async (fastify: FastifyInstance) => {
         },
         data: {
           googleId: userInfo.id,
+        },
+      })
+    }
+
+    const token = fastify.jwt.sign(
+      {
+        name: user.name,
+        email: user.email,
+      },
+      {
+        sub: user.id,
+        expiresIn: '7 days',
+      },
+    )
+
+    return reply.status(200).send({
+      token,
+    })
+  })
+
+  fastify.post('/github', async (request, reply) => {
+    const createUserSchema = z.object({
+      accessToken: z.string(),
+    })
+
+    const { accessToken } = createUserSchema.parse(request.body)
+
+    const userResponse = githubApi.get('user', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const userData = (await userResponse).data
+
+    console.log(userData)
+
+    const userInfoSchema = z.object({
+      id: z.number(),
+      name: z.string(),
+      email: z.string().email(),
+      avatar_url: z.string().url(),
+    })
+
+    const userInfo = userInfoSchema.parse(userData)
+
+    if (userInfo.name === null || userInfo.email === null) {
+      return reply.status(400).send({
+        message: 'Invalid user data from Github',
+      })
+    }
+
+    let user = await prisma.user.findUnique({
+      where: {
+        email: userInfo.email,
+      },
+    })
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name: userInfo.name,
+          email: userInfo.email,
+          picture: userInfo.avatar_url,
+          githubId: userInfo.id,
+        },
+      })
+    }
+
+    if (user && user?.githubId === null) {
+      user = await prisma.user.update({
+        where: {
+          email: userInfo.email,
+        },
+        data: {
+          githubId: userInfo.id,
         },
       })
     }
