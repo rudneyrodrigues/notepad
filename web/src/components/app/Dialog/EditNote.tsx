@@ -162,9 +162,9 @@ const EditNote = ({ note, children }: EditNoteProps) => {
             <Input
               required
               type="text"
+              height="lg"
               name="title"
               value={title}
-              label="Título"
               placeholder="Título da Nota"
               onChange={(e) => setTitle(e.target.value)}
             />

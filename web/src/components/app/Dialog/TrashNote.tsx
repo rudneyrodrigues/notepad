@@ -80,7 +80,7 @@ const TrashNote = ({ note, children }: TrashNoteProps) => {
 
         <div className="flex flex-col gap-8 p-6">
           <div className="flex flex-col gap-4">
-            <span className="flex h-9 items-center px-3 border rounded-md">
+            <span className="flex h-10 items-center px-3 border rounded-md">
               {note.title}
             </span>
 
