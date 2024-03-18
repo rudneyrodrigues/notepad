@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { ArchiveIcon, LightbulbIcon, TrashIcon } from 'lucide-react'
 import { BookmarkIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 
-import { Button } from '../ui/button'
 import { Skeleton } from '../ui/skeleton'
 import { ResizablePanel } from '../ui/resizable'
 import { useGetHighlights } from '@/lib/swr/useGetHighlights'
@@ -33,10 +32,6 @@ const Aside = () => {
           </strong>
 
           <div className="w-full flex flex-col gap-2 p-4 overflow-y-auto">
-            <Button size="lg" variant="secondary">
-              Adicionar marcador
-            </Button>
-
             {isLoading &&
               Array.from({ length: 5 }, (_, i) => (
                 <Skeleton key={i} className="h-20 min-h-20" />
