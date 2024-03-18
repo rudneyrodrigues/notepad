@@ -1,8 +1,8 @@
-import Link from 'next/link'
 import { ArchiveIcon, LightbulbIcon, TrashIcon } from 'lucide-react'
 import { BookmarkIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 
 import { Skeleton } from '../ui/skeleton'
+import { ActiveLink } from './ActiveLink'
 import { ResizablePanel } from '../ui/resizable'
 import { useGetHighlights } from '@/lib/swr/useGetHighlights'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
@@ -19,13 +19,14 @@ const Aside = () => {
     >
       <aside className="w-full flex flex-col gap-4 border-r h-[calc(100vh-64px)]">
         <div className="flex flex-col relative overflow-y-auto">
-          <Link
+          <ActiveLink
             href="/"
+            shouldMatchExactHref
             className="flex items-center p-4 m-4 rounded gap-4 transition-all hover:bg-muted"
           >
             <LightbulbIcon className="w-6 h-6" />
             Notas
-          </Link>
+          </ActiveLink>
 
           <strong className="flex items-center text-xs text-muted-foreground my-4 gap-2 uppercase before:w-full before:h-[1px] before:bg-muted-foreground before:rounded after:w-full after:h-[1px] after:bg-muted-foreground after:rounded">
             Marcadores
@@ -55,35 +56,38 @@ const Aside = () => {
               </Alert>
             ) : (
               data?.map((highlight) => (
-                <Link
+                <ActiveLink
                   key={highlight.id}
+                  shouldMatchExactHref
                   href={`/highlights/${highlight.id}`}
                   className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
                 >
                   <BookmarkIcon className="w-6 h-6" />
                   {highlight.content}
-                </Link>
+                </ActiveLink>
               ))
             )}
           </div>
         </div>
 
         <div className="flex flex-col gap-2 m-4 mt-auto">
-          <Link
+          <ActiveLink
             href="/archive"
+            shouldMatchExactHref
             className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
           >
             <ArchiveIcon className="w-6 h-6" />
             Arquivo
-          </Link>
+          </ActiveLink>
 
-          <Link
+          <ActiveLink
             href="/trash"
+            shouldMatchExactHref
             className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
           >
             <TrashIcon className="w-6 h-6" />
             Lixeira
-          </Link>
+          </ActiveLink>
         </div>
       </aside>
     </ResizablePanel>

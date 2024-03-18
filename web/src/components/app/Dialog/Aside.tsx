@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import {
   HamburgerMenuIcon,
   ExclamationTriangleIcon,
@@ -10,11 +9,19 @@ import {
   LightbulbIcon,
 } from 'lucide-react'
 
+import { ActiveLink } from '../ActiveLink'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetHighlights } from '@/lib/swr/useGetHighlights'
-import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetTitle,
+  SheetHeader,
+  SheetTrigger,
+  SheetContent,
+} from '@/components/ui/sheet'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { Notepad } from '@phosphor-icons/react'
 
 const AsideSheet = (): JSX.Element => {
   const { data, isError, isLoading } = useGetHighlights()
@@ -27,18 +34,27 @@ const AsideSheet = (): JSX.Element => {
         </Button>
       </SheetTrigger>
 
-      <SheetContent
-        side="left"
-        className="flex flex-col overflow-y-auto justify-between"
-      >
+      <SheetContent side="left" className="flex flex-col overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle className="flex items-center gap-2">
+            <Notepad
+              size={32}
+              weight="fill"
+              className="text-primary fill-primary"
+            />
+            Notepad
+          </SheetTitle>
+        </SheetHeader>
+
         <div className="flex flex-col relative overflow-y-auto">
-          <Link
+          <ActiveLink
             href="/"
+            shouldMatchExactHref
             className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
           >
             <LightbulbIcon className="w-6 h-6" />
             Notas
-          </Link>
+          </ActiveLink>
 
           <strong className="flex items-center text-xs text-muted-foreground my-4 gap-2 uppercase before:w-full before:h-[1px] before:bg-muted-foreground before:rounded after:w-full after:h-[1px] after:bg-muted-foreground after:rounded">
             Marcadores
@@ -47,7 +63,7 @@ const AsideSheet = (): JSX.Element => {
           <div className="w-full flex flex-col gap-2 px-1 py-4 overflow-y-auto">
             {isLoading &&
               Array.from({ length: 5 }, (_, i) => (
-                <Skeleton key={i} className="h-20 min-h-20" />
+                <Skeleton key={i} className="h-14 min-h-14" />
               ))}
 
             {isError && (
@@ -68,35 +84,38 @@ const AsideSheet = (): JSX.Element => {
               </Alert>
             ) : (
               data?.map((highlight) => (
-                <Link
+                <ActiveLink
                   key={highlight.id}
+                  shouldMatchExactHref
                   href={`/highlights/${highlight.id}`}
                   className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
                 >
                   <BookmarkIcon className="w-6 h-6" />
                   {highlight.content}
-                </Link>
+                </ActiveLink>
               ))
             )}
           </div>
         </div>
 
-        <div className="flex flex-col w-full gap-2">
-          <Link
+        <div className="flex flex-col w-full gap-2 mt-auto">
+          <ActiveLink
             href="/archive"
+            shouldMatchExactHref
             className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
           >
             <ArchiveIcon className="w-6 h-6" />
             Arquivo
-          </Link>
+          </ActiveLink>
 
-          <Link
+          <ActiveLink
             href="/trash"
+            shouldMatchExactHref
             className="flex items-center p-4 rounded gap-4 transition-all hover:bg-muted"
           >
             <TrashIcon className="w-6 h-6" />
             Lixeira
-          </Link>
+          </ActiveLink>
         </div>
       </SheetContent>
     </Sheet>
