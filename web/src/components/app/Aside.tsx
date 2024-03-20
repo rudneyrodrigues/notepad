@@ -1,14 +1,14 @@
 import { ArchiveIcon, LightbulbIcon, TrashIcon } from 'lucide-react'
-import { BookmarkIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
+// import { BookmarkIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 
-import { Skeleton } from '../ui/skeleton'
+// import { Skeleton } from '../ui/skeleton'
 import { ActiveLink } from './ActiveLink'
 import { ResizablePanel } from '../ui/resizable'
-import { useGetHighlights } from '@/lib/swr/useGetHighlights'
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+// import { useGetHighlights } from '@/lib/swr/useGetHighlights'
+// import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 
 const Aside = () => {
-  const { data, isError, isLoading } = useGetHighlights()
+  // const { data, isError, isLoading } = useGetHighlights()
 
   return (
     <ResizablePanel
@@ -28,7 +28,7 @@ const Aside = () => {
             Notas
           </ActiveLink>
 
-          <strong className="flex items-center text-xs text-muted-foreground my-4 gap-2 uppercase before:w-full before:h-[1px] before:bg-muted-foreground before:rounded after:w-full after:h-[1px] after:bg-muted-foreground after:rounded">
+          {/* <strong className="flex items-center text-xs text-muted-foreground my-4 gap-2 uppercase before:w-full before:h-[1px] before:bg-muted-foreground before:rounded after:w-full after:h-[1px] after:bg-muted-foreground after:rounded">
             Marcadores
           </strong>
 
@@ -67,7 +67,7 @@ const Aside = () => {
                 </ActiveLink>
               ))
             )}
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-2 m-4 mt-auto">
